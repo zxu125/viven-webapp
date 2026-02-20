@@ -1,0 +1,375 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+button:hover {
+  border: none;
+}
+button:focus{
+  border: none;
+}
+html, body, #root { height: 100%; margin: 0; }
+
+/* =========================================================
+   THEME TOKENS (Light / Dark)
+   ========================================================= */
+
+/* Светлая тема */
+.theme-light {
+  --bg: #F6F8FB;            /* общий фон */
+  --surface: #FFFFFF;       /* карточки/панели */
+  --surface-2: #F0F4FA;     /* вторичные блоки */
+  --border: rgba(15, 23, 42, 0.10);
+
+  --text: #0F172A;          /* основной текст */
+  --text-2: rgba(15, 23, 42, 0.70); /* вторичный */
+  --muted: rgba(15, 23, 42, 0.45);
+
+  --primary: #1D9BF0;       /* “вода/доставка” */
+  --primary-2: #0B74D1;     /* hover/active */
+  --on-primary: #FFFFFF;
+
+  --success: #18A34A;
+  --warning: #F59E0B;
+  --danger:  #EF4444;
+
+  --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+
+  /* Вспомогательные акценты */
+  --info: #0EA5E9;
+  --accent: #22C55E;        /* можно для “оплачено/доставлено” */
+}
+
+/* Тёмная тема */
+.theme-dark {
+  --bg: #0B1220;
+  --surface: #111B2E;
+  --surface-2: #0E1730;
+  --border: rgba(255, 255, 255, 0.10);
+
+  --text: rgba(255, 255, 255, 0.92);
+  --text-2: rgba(255, 255, 255, 0.70);
+  --muted: rgba(255, 255, 255, 0.48);
+
+  --primary: #3AA8FF;
+  --primary-2: #1D89E0;
+  --on-primary: #06121F;
+
+  --success: #2BD166;
+  --warning: #FFC04D;
+  --danger:  #FF5A5F;
+
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+
+  --info: #38BDF8;
+  --accent: #34D399;
+}
+
+/* =========================================================
+   BASE
+   ========================================================= */
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+/* =========================================================
+   RADIUS (sm/md/l)
+   ========================================================= */
+.r-sm { border-radius: 10px; }
+.r-md { border-radius: 14px; }
+.r-lg { border-radius: 20px; }
+
+/* =========================================================
+   FONT SIZES
+   ========================================================= */
+.f-xs { font-size: 12px; line-height: 16px; }
+.f-sm { font-size: 14px; line-height: 20px; }
+.f-md { font-size: 16px; line-height: 22px; }
+.f-lg { font-size: 18px; line-height: 24px; }
+.f-xl { font-size: 22px; line-height: 28px; }
+.f-2xl { font-size: 28px; line-height: 34px; }
+
+.f-regular { font-weight: 400; }
+.f-medium  { font-weight: 500; }
+.f-semibold{ font-weight: 600; }
+.f-bold    { font-weight: 700; }
+
+/* =========================================================
+   TEXT COLORS
+   ========================================================= */
+.text-primary { color: var(--text); }
+.text-secondary { color: var(--text-2); }
+.text-muted { color: var(--muted); }
+
+.text-brand { color: var(--primary); }
+.text-success { color: var(--success); }
+.text-warning { color: var(--warning); }
+.text-danger  { color: var(--danger); }
+.text-info    { color: var(--info); }
+
+/* =========================================================
+   BACKGROUNDS + SURFACES
+   ========================================================= */
+.bg-app { background: var(--bg); }
+.bg-surface { background: var(--surface); }
+.bg-surface-2 { background: var(--surface-2); }
+
+.bg-brand { background: var(--primary); color: var(--on-primary); }
+.bg-success { background: var(--success); color: #fff; }
+.bg-warning { background: var(--warning); color: #111; }
+.bg-danger  { background: var(--danger);  color: #fff; }
+
+/* =========================================================
+   BORDERS + SHADOW
+   ========================================================= */
+.b { border: 1px solid var(--border); }
+.b-top { border-top: 1px solid var(--border); }
+.b-bottom { border-bottom: 1px solid var(--border); }
+.shadow { box-shadow: var(--shadow); }
+
+/* =========================================================
+   LAYOUT HELPERS
+   ========================================================= */
+.p-8 { padding: 8px; }
+.p-12 { padding: 12px; }
+.p-16 { padding: 16px; }
+.p-20 { padding: 20px; }
+
+.g-8 { gap: 8px; }
+.g-12 { gap: 12px; }
+.g-16 { gap: 16px; }
+
+.row { display: flex; align-items: center; }
+.col { display: flex; flex-direction: column; }
+.space-between { justify-content: space-between; }
+
+/* =========================================================
+   COMPONENT TEMPLATES (для всего проекта)
+   ========================================================= */
+
+/* Карточка (заказ/клиент/точка доставки) */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  border-radius: 16px;
+  padding: 14px;
+}
+
+/* Верхняя панель/хедер */
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Инпуты */
+.input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 14px;
+  padding: 12px 12px;
+  outline: none;
+}
+.input::placeholder { color: var(--muted); }
+.input:focus { border-color: rgba(29, 155, 240, 0.55); }
+.input.disabled {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--text-2);
+  cursor: not-allowed;
+}
+/* Кнопки */
+.btn {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 16px;
+  padding: 12px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .05s ease, background .12s ease, border-color .12s ease;
+}
+.btn:active { transform: scale(0.99); }
+.btn-sm { padding: 8px 12px; font-size: 14px; }
+.btn-primary {
+  background: var(--primary);
+  border-color: rgba(0,0,0,0);
+  color: var(--on-primary);
+}
+.btn-primary:hover { background: var(--primary-2); }
+
+.btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text);
+}
+.btn-ghost:hover { background: rgba(127,127,127,0.10); }
+
+.btn-danger {
+  background: var(--danger);
+  border-color: transparent;
+  color: #fff;
+}
+
+/* Чип/бейдж (статус заказа) */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text-2);
+  font-size: 12px;
+  font-weight: 600;
+}
+.badge-success { background: rgba(24,163,74,0.12); color: var(--success); border-color: rgba(24,163,74,0.25); }
+.badge-warning { background: rgba(245,158,11,0.14); color: var(--warning); border-color: rgba(245,158,11,0.28); }
+.badge-danger  { background: rgba(239,68,68,0.12); color: var(--danger);  border-color: rgba(239,68,68,0.28); }
+.badge-brand   { background: rgba(29,155,240,0.14); color: var(--primary); border-color: rgba(29,155,240,0.30); }
+
+/* Нижний TabBar */
+.tabbar {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 10px 10px;
+}
+.tabbar-row { display: flex; gap: 8px; }
+.tab {
+  flex: 1;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  border-radius: 16px;
+  padding: 10px 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.tab.active {
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+
+/* Лист-элемент (строка заказа/клиента) */
+.list-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px 12px;
+}
+
+
+.layout { height: 100%; width: 100%; display: flex; flex-direction: column; }
+.content { flex: 1; overflow: hidden; }
+
+.tabbar {
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  border-top: 1px solid rgba(0,0,0,.1);
+}
+
+.tabbtn {
+  flex: 1;
+  padding: 10px;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
+  background: var(--surface);
+}
+.tabbtn:hover { border: none; outline: none; }
+.tabbtn:active { border: none; outline: none; }
+.tabbtn:focus { border: none; outline: none; }
+
+.tabbtn--active { font-weight: 700; }
+
+.map-marker:focus {
+  outline: 4px auto -webkit-focus-ring-color;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5); }
+  70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+}
+
+.no-thumb::-webkit-scrollbar-thumb{
+  display: none;
+}
