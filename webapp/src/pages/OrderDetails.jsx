@@ -57,6 +57,8 @@ export default function OrderDetails({ query }) {
                   priority: order.priority
                 }).then(() => {
                   queryClient.invalidateQueries(['orders']);
+                  queryClient.invalidateQueries(['ordersHistory']);
+                  queryClient.invalidateQueries(['map']);
                   nav("/orders");
                 }).catch(e => {
                   alert('Ошибка при сохранении' + e.response?.data?.message || e.message || JSON.stringify(e))
@@ -163,10 +165,10 @@ export default function OrderDetails({ query }) {
           </button>
           {![1, 2].includes(order.statusId) &&
             <>
-              <button class="btn btn-primary" onClick={() => nav("/order/confirm", { query: { orderId: order.id, confirm: true, next: '/order/view' + order.id } })}>
+              <button class="btn btn-primary" onClick={() => nav("/order/confirm", { query: { orderId: order.id, confirm: true, next: '/order/view?orderId=' + order.id } })}>
                 Подтвердить заказ
               </button>
-              <button class="btn btn-danger" onClick={() => nav("/order/confirm", { query: { orderId: order.id, confirm: false, next: '/order/view' + order.id } })}>
+              <button class="btn btn-danger" onClick={() => nav("/order/confirm", { query: { orderId: order.id, confirm: false, next: '/order/view?orderId=' + order.id } })}>
                 Отменить заказ
               </button>
             </>

@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { nav } from "../app/router";
 import { api } from "../app/api";
+import { useQueryClient } from "@tanstack/react-query";
+
 export default function ConfirmOrder({ query }) {
+    const queryClient = useQueryClient();
     const confirm = query.confirm == 'true'
     const [data, setData] = useState({
         countGiven: 0,
@@ -42,7 +45,10 @@ export default function ConfirmOrder({ query }) {
                 <div class="row g-8">
                     <button class="btn btn-primary r-md" onClick={() => {
                         api.post(`/orders/${confirm ? 'complete-order' : 'cancel-order'}`, { id: query.orderId, ...data }).then(() => {
-                            nav(query.next);
+                            queryClient.invalidateQueries(['orders']);
+                            queryClient.invalidateQueries(['ordersHistory']);
+                            queryClient.invalidateQueries(['map']);
+                            window.history.back();
                         }).catch(e => {
                             alert('Ошибка при подтверждении заказа' + (e.response?.data?.message || e.message || JSON.stringify(e)))
                         })

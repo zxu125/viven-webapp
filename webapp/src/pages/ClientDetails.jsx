@@ -59,6 +59,7 @@ export default function ClientDetails({ query }) {
                                     deliveryNote: client.deliveryNote,
                                     address: client.address,
                                     regionId: client.region?.id,
+                                    location: client.location,
                                 }).then(() => {
                                     queryClient.invalidateQueries(['clients']);
                                     nav("/clients");
@@ -225,8 +226,8 @@ export default function ClientDetails({ query }) {
             <YandexLocationPickerModal
                 open={mapOpen}
                 onClose={() => setMapOpen(false)}
-                initialCenter={{ lat: 41.311081, lon: 69.240562, zoom: 12 }}
-                onPick={(p) => { alert(JSON.stringify(p)); setClient(s => ({ ...s, location: p })) }}
+                initialPoint={{ lat: client.location.latitude, lon: client.location.longitude, zoom: 12 }}
+                onPick={(p) => { setClient(s => ({ ...s, location: { latitude: p.lat, longitude: p.lon } })) }}
             />
         </div >
     );

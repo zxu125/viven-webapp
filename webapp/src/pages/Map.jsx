@@ -329,7 +329,7 @@ export function Map() {
                             background: "var(--surface)",
                             paddingTop: 10,
                             position: "absolute",
-                            bottom: 0,
+                            bottom: 64,
                             width: "90%",
                             paddingBottom: 10,
                         }}

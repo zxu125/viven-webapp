@@ -18,12 +18,16 @@ export default function OrderHIstory({ query }) {
             }).then(res => res.data)
         }
     })
-    let filtered = data?.filter(e => {
-        if (!state.search) return true;
-        return e.client.name?.toLowerCase().includes(state.search?.toLowerCase()) || e.user.name?.toLowerCase().includes(state.search?.toLowerCase())
-    })
+    let filtered = data;
+    // let filtered = data?.filter(e => {
+    //     if (!state.search) return true;
+    //     return e.client.name?.toLowerCase().includes(state.search?.toLowerCase()) || e.user.name?.toLowerCase().includes(state.search?.toLowerCase())
+    // })
     useEffect(() => {
-        refetch()
+        let t = setTimeout(() => {
+            refetch()
+        }, 800);
+        return () => clearTimeout(t);
     }, [state.search, query.clientId])
 
     return (
@@ -45,10 +49,10 @@ export default function OrderHIstory({ query }) {
 
                 <input
                     class="input r-md"
-                    placeholder="Поиск по клиенту или адресу"
+                    placeholder="Поиск по клиенту или пользователью"
                     onChange={e => setState(s => ({ ...s, search: e.target.value }))}
                 />
-                <RefreshCw size={24} style={{ position: 'absolute', top: 29, right: 36 }} color="grey" onClick={()=>alert(1)} />
+                {/* <RefreshCw size={24} style={{ position: 'absolute', top: 29, right: 36 }} color="grey" onClick={() => refetch()} /> */}
             </div>
             <div class="p-16 col g-16" style={{ height: 'calc(100vh - 150px)', overflow: 'scroll', marginTop: -10 }}>
                 {filtered && filtered.map(e => (<div className="card">

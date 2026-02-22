@@ -16,7 +16,7 @@ import Profile from "../pages/Profile";
 
 import useTelegramTheme from "../hooks/useTelegramTheme";
 import { useAuth } from "../context/AuthContext";
- 
+
 export default function App() {
   const theme = useTelegramTheme();
   const { status, authed, onLoggedIn } = useAuth();
@@ -119,7 +119,9 @@ export default function App() {
   if (status === "unknown") return <div style={{ padding: 16 }}>Loading...</div>;
 
   if (route.name === "login") {
-    return <Login onLoggedIn={onLoggedIn} />;
+    return <div className={`layout ${theme == 'light' ? 'theme-light' : 'theme-dark'}`}>
+      <Login onLoggedIn={onLoggedIn} />
+    </div>;
   }
 
   const overlay = renderOverlay();

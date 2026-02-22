@@ -63,6 +63,7 @@ export default function OrderCreate({ query }) {
                             }).then(() => {
                                 alert('Сохранено');
                                 queryClient.invalidateQueries(['orders']);
+                                queryClient.invalidateQueries(['map']);
                                 nav("/orders");
                             }).catch(e => {
                                 setIsLoading(false);

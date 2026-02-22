@@ -51,8 +51,8 @@ export default function LoginPage({ onLoggedIn }) {
       const r = await login(username, password, "webapp_tg", tgSession);
       onLoggedIn?.(r); // передадим наверх (accessToken/user)
     } catch (e2) {
-      alert(e2?.message || "Login error");
-      setErr(e2?.message || "Login error");
+      // alert(e2?.message || "Login error");
+      setErr(e2?.message || "Ошибка входа");
     } finally {
       setLoading(false);
     }
@@ -61,58 +61,34 @@ export default function LoginPage({ onLoggedIn }) {
   const disabled = loading || !username || !password || !tgSession;
 
   return (
-    <div style={styles.wrap}>
-      <div style={styles.card}>
-        <h2 style={styles.h2}>Вход</h2>
-
-        {tgUser && (
-          <div style={styles.tgBox}>
-            Telegram: <b>{tgUser.first_name}</b> (id: {tgUser.id})
+    <div class="bg-app">
+      <div class="p-16 col g-16" style={{ width: '100vw', height: '100vh' }}>
+        <div class="card" style={{ marginTop: 'auto', marginBottom: 'auto' }}>
+          <div class="f-lg text-primary">Вход</div>
+          <div class="row space-between" style={{ marginTop: 10, width: "100%" }}>
+            <div style={{ marginTop: 10, width: "100%" }}>
+              <div class="f-sm text-secondary">Логин</div>
+              <input class="input" type="text" value={username}
+                onChange={(e) => setUsername(e.target.value)} />
+            </div>
           </div>
-        )}
-
-        {!tgSession && (
-          <div style={styles.warn}>
-            Открой эту страницу из Telegram (кнопка бота). Handshake не получен.
+          <div class="row space-between" style={{ marginTop: 10, width: "100%" }}>
+            <div style={{ marginTop: 10, width: "100%" }}>
+              <div class="f-sm text-secondary">Пароль</div>
+              <input class="input" value={password}
+                onChange={(e) => setPassword(e.target.value)} />
+            </div>
           </div>
-        )}
-
-        <form onSubmit={submit} style={styles.form}>
-          <label style={styles.label}>
-            Логин
-            <input
-              style={styles.input}
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              autoComplete="username"
-              placeholder="username"
-            />
-          </label>
-
-          <label style={styles.label}>
-            Пароль
-            <input
-              style={styles.input}
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
-              placeholder="••••••••"
-            />
-          </label>
-
-          <div style={styles.error}>Error: {err} </div>
-          <div>{disabled}</div>
-          <button style={styles.btn} disabled={disabled}>
-            {loading ? "Входим..." : "Войти"}
+          {err && <div class='text-sm text-danger' style={{ marginLeft: 12 }}>
+            {err}
+          </div>}
+          <button class="btn btn-primary" onClick={submit} disabled={disabled}
+            style={{ marginTop: 10, width: "100%" }}>
+            {loading ? "Вход..." : "Войти"}
           </button>
-        </form>
-
-        <div style={styles.hint}>
-          После входа accessToken хранится в памяти. Refresh делается через cookie.
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 
@@ -123,64 +99,3 @@ async function safeJson(r) {
     return null;
   }
 }
-
-const styles = {
-  wrap: {
-    minHeight: "100vh",
-    display: "grid",
-    placeItems: "center",
-    padding: 16,
-    fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial",
-  },
-  card: {
-    width: "100%",
-    maxWidth: 420,
-    background: "#aaa",
-    borderRadius: 16,
-    padding: 16,
-    boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
-  },
-  h2: { margin: "0 0 12px" },
-  tgBox: {
-    background: "#e6ffed",
-    padding: 10,
-    borderRadius: 12,
-    marginBottom: 12,
-    fontSize: 14,
-  },
-  warn: {
-    background: "#aaa",
-    padding: 10,
-    borderRadius: 12,
-    marginBottom: 12,
-    fontSize: 14,
-  },
-  form: { display: "grid", gap: 10 },
-  label: { display: "grid", gap: 6, fontSize: 14 },
-  input: {
-    height: 42,
-    borderRadius: 12,
-    border: "1px solid #ddd",
-    padding: "0 12px",
-    outline: "none",
-    fontSize: 16,
-  },
-  error: {
-    background: "#ffecec",
-    color: "#a40000",
-    padding: 10,
-    borderRadius: 12,
-    fontSize: 14,
-  },
-  btn: {
-    height: 44,
-    borderRadius: 12,
-    border: "none",
-    background: "#111",
-    color: "#fff",
-    fontSize: 16,
-    cursor: "pointer",
-    opacity: 1,
-  },
-  hint: { marginTop: 10, color: "#666", fontSize: 12, lineHeight: 1.4 },
-};

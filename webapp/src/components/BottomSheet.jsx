@@ -86,7 +86,7 @@ export default function BottomSheet({
           maxHeight: "90vh",
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
-          zIndex: 1000,
+          zIndex: 10000,
           padding: 4,
           boxShadow: "0 -4px 20px rgba(0,0,0,0.15)",
           animation: "slideUp 0.25s ease",
