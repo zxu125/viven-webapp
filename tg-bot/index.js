@@ -1,6 +1,15 @@
 import "dotenv/config";
 import express from "express";
 import { Telegraf, Markup } from "telegraf";
+import axios from "axios";
+
+const API_BASE = process.env.API_BASE || "http://localhost:51213";
+
+const api = axios.create({
+  baseURL: API_BASE,
+  timeout: 5000,
+  headers: { "Content-Type": "application/json", "x-tg-bot-password": process.env.BOT_PASSWORD || "" },
+});
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const WEBAPP_URL = process.env.WEBAPP_URL;
@@ -33,12 +42,21 @@ bot.command("newclient", async (ctx) => {
   await ctx.reply("Введите имя клиента (например: Ислом Абдуллаев):");
 });
 
+bot.command('updateclient', async (ctx) => {
+  const chatId = ctx.chat.id;
+  const s = getSession(chatId);
+  s.step = "wait_name_update";
+  s.name = "";
+
+  await ctx.reply("Введите имя клиента для обновления (например: Ислом Абдуллаев):");
+});
+
 bot.on("text", async (ctx) => {
   const chatId = ctx.chat.id;
   const s = getSession(chatId);
-
+  await ctx.reply(s.step);
   // если не в сценарии — игнор/или обычный ответ
-  if (s.step !== "wait_name") return;
+  if (s.step !== "wait_name" && s.step !== 'wait_name_update') return;
 
   const name = (ctx.message.text || "").trim();
   if (name.length < 2) {
@@ -47,7 +65,7 @@ bot.on("text", async (ctx) => {
   }
 
   s.name = name;
-  s.step = "wait_location";
+  s.step = (s.step == 'wait_name') ? "wait_location" : "wait_location_update";
 
   await ctx.reply(
     `Ок, клиент: "${name}". Теперь отправьте локацию (кнопка ниже).`,
@@ -64,7 +82,7 @@ bot.on("location", async (ctx) => {
   const chatId = ctx.chat.id;
   const s = getSession(chatId);
 
-  if (s.step !== "wait_location") {
+  if (s.step !== "wait_location" && s.step !== "wait_location_update") {
     await ctx.reply("Сначала используйте команду /newclient");
     return;
   }
@@ -72,33 +90,37 @@ bot.on("location", async (ctx) => {
   const { latitude, longitude } = ctx.message.location;
   await ctx.reply(`Получил локацию: ${latitude}, ${longitude}. Сохраняю...`, Markup.removeKeyboard());
   Markup.removeKeyboard()
-  return
   try {
     // отправляем на nodejs сервер
     const payload = {
       tgUserId: ctx.from?.id,
       chatId,
       name: s.name,
-      lat: latitude,
-      lon: longitude,
+      location: { latitude, longitude },
       // можно добавить username/phone если есть
       username: ctx.from?.username || null,
     };
 
-    const r = await axios.post(`${API_BASE}/tg/newclient`, payload, {
-      timeout: 10000,
-      headers: { "Content-Type": "application/json" },
-    });
 
+    let r
+    if (s.step === "wait_location_update") {
+      r = await api.post(`${API_BASE}/tg-bot/updateclient`, payload);
+    }
+    else r = await api.post(`${API_BASE}/tg-bot/newclient`, payload);
+
+    if (s.step === 'wait_location') {
+      await ctx.reply(
+        `✅ Клиент создан: ${r.data?.clientId ? `ID ${r.data.clientId}` : "готово"}`,
+        Markup.removeKeyboard()
+      );
+    }
+    else await ctx.reply(`✅ Клиент обновлен: ${r.data?.clientId ? `ID ${r.data.clientId}` : "готово"}`, Markup.removeKeyboard());
     // сброс сценария
     s.step = "idle";
     s.name = "";
 
-    await ctx.reply(
-      `✅ Клиент создан: ${r.data?.clientId ? `ID ${r.data.clientId}` : "готово"}`,
-      Markup.removeKeyboard()
-    );
   } catch (e) {
+    console.error("Error saving client:", e?.response?.data || e.message || e);
     await ctx.reply(
       `❌ Не получилось сохранить на сервере. Попробуйте еще раз или /newclient заново.`,
       Markup.removeKeyboard()
