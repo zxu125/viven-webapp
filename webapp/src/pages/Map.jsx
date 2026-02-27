@@ -5,26 +5,21 @@ import { api } from "../app/api";
 import { ClientSheetContent } from "../components/ClientSheetContent";
 import { Filter, Navigation, Pencil, Phone, Route, Send } from "lucide-react";
 import { nav } from "../app/router";
-import { callPhone, openTelegramByPhone, openYandexRoute } from "../app/functions";
+import { callPhone, openTelegramByPhone, openYandexRoute, toDateInputValue } from "../app/functions";
 import useTelegramTheme from "../hooks/useTelegramTheme";
 import SelectMultiOption from "../components/SelectMultiOption";
 
 export function Map() {
-    const theme = useTelegramTheme();
     const [regions, setRegions] = React.useState(null);
 
-    const selected = {
-        id: 1,
-        name: "Клиент 1",
-        phone: "+998901234567",
-        address: "Ташкент, ...",
-        comment: "Домофон 12",
-        stock: { full: 2, empty: 1, debt: 0 },
-        activeOrder: { code: "A-104", statusRu: "В пути", count: 2, total: "120 000" }
-    }
     const containerRef = useRef(null);
     const [regionSelectOpen, setRegionSelectOpen] = React.useState(false);
-    const [filters, setFilters] = React.useState({})
+    const [filters, setFilters] = React.useState({
+        // beginDate: toDateInputValue(new Date()),
+        endDate: toDateInputValue(new Date()),
+        statusId: 5,
+
+    })
     const [navig, setNavig] = React.useState({
         active: false,
         points: []
@@ -33,21 +28,28 @@ export function Map() {
     const mapRef = useRef(null);
     const markersRef = useRef([]); // храним созданные маркеры
     const { data } = useQuery({
-        queryKey: ["points"],
+        queryKey: ["map"],
         queryFn: () => api.get('/map/all').then(res => res.data),
-
     });
     const [filteredData, setFilteredData] = React.useState([])
     const [points, setPoints] = React.useState([]);
     const [filterOpen, setFilterOpen] = React.useState(false);
 
     function handleNavig() {
-        openYandexRoute(navig.points.map(p => ({ lat: p.location.latitude, lon: p.location.longitude })), "auto");
         setNavig({ active: false });
-        mapRef.current.forEach(p => p.el.style.transform = 'scale(1)');
+        setShowMapButtons(true);
+        try {
+            markersRef.current.forEach(p => p.el.style.transform = 'scale(1)');
+        } catch (e) {
+            alert('Ошибка при построении маршрута' + (e.message || JSON.stringify(e)))
+        }
+        openYandexRoute(navig.points.map(p => ({ lat: p.location.latitude, lon: p.location.longitude })), "auto");
     }
 
-    useEffect(() => setFilteredData(data), [data]);
+    useEffect(() => {
+        data && applyFilters(filters);
+        setSelectedPoint(null);
+    }, [data]);
     useEffect(() => {
         setPoints(filteredData?.map(p => ({
             name: (p.client.name + '').slice(0, 3),
@@ -84,8 +86,8 @@ export function Map() {
             if (filters.statusId && (!e.order || filters.statusId != e.order.statusId)) return false;
             if (filters.noOrder && e.order) return false;
             if (filters.regions?.length && !filters.regions.map(r => r.id).includes(e.client.region?.id)) return false;
-            if (filters.beginDate && (!e.order || new Date(filters.beginDate) > new Date(e.order?.createdAt))) return false;
-            if (filters.endDate && (!e.order || new Date(new Date(filters.endDate).getTime() + 3600 * 24 * 1000) < new Date(e.order?.createdAt))) return false;
+            if (filters.beginDate && (!e.order || new Date(filters.beginDate) > new Date(e.order?.deliveryDate))) return false;
+            if (filters.endDate && (!e.order || new Date(new Date(filters.endDate).getTime() + 3600 * 24 * 1000) < new Date(e.order?.deliveryDate))) return false;
             return true
         }))
     }
@@ -328,10 +330,12 @@ export function Map() {
                         style={{
                             background: "var(--surface)",
                             paddingTop: 10,
-                            position: "absolute",
-                            bottom: 64,
-                            width: "90%",
+                            // position: "absolute",
+                            // bottom: 64,
+                            width: "100%",
                             paddingBottom: 10,
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
                         }}
                     >
                         <div className="row g-8">

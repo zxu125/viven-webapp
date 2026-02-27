@@ -26,6 +26,26 @@ export function callPhone(phone) {
 
 }
 
+export function toDatetimeLocal(isoUtc) {
+    const d = new Date(isoUtc);
+    const pad = (n) => String(n).padStart(2, "0");
+    return (
+        `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}` +
+        `T${pad(d.getHours())}:${pad(d.getMinutes())}`
+    );
+}
+
+export function toDateInputValue(date) {
+    const d = new Date(date);
+    const pad = (n) => String(n).padStart(2, "0");
+
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+export function fromDatetimeLocal(localValue) {
+    const d = new Date(localValue);
+    return d.toISOString();
+}
 
 export function openTelegramByPhone(phone) {
     const clean = String(phone || "").replace(/[^\d]/g, "");

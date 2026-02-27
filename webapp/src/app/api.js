@@ -83,7 +83,7 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      refreshPromise = refreshClient.post("/auth/refresh", { refreshToken });
+      refreshPromise = refreshClient.post("/auth/refresh", {});
 
       const refreshRes = await refreshPromise;
 

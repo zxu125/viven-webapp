@@ -59,7 +59,7 @@ export default function Orders() {
           <div class="row space-between p-12" style={{ paddingLeft: 0, paddingRight: 0 }}>
             <div class="col">
               <div class="f-sm text-secondary">Дата</div>
-              <div class="f-md f-medium">{new Date(e.orderDate || e.createdAt).toLocaleDateString()}</div>
+              <div class="f-md f-medium">{new Date(e.deliveryDate || e.createdAt).toLocaleString()}</div>
             </div>
 
             <div class="col" style={{ textAlign: 'right' }}>

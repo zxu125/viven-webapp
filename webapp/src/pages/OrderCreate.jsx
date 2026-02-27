@@ -59,7 +59,8 @@ export default function OrderCreate({ query }) {
                                 note: order.note,
                                 priority: order.priority,
                                 orderDate: new Date(),
-                                clientId: order.client.id
+                                clientId: order.client.id,
+                                deliveryDate: order.deliveryDate + ':00.000Z',
                             }).then(() => {
                                 alert('Сохранено');
                                 queryClient.invalidateQueries(['orders']);
@@ -118,6 +119,12 @@ export default function OrderCreate({ query }) {
                             <div>
                                 <div class="f-sm text-secondary">Адрес</div>
                                 <input readOnly={true} class="input disabled" value={order.client.address} />
+                            </div>
+                        </div>
+                        <div class="row space-between">
+                            <div>
+                                <div class="f-sm text-secondary">Дата доставки</div>
+                                <input class="input" type="datetime-local" value={order.deliveryDate} onChange={e => setOrder(s => ({ ...s, deliveryDate: e.target.value }))} />
                             </div>
                         </div>
                     </div>

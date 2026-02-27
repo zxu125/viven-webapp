@@ -6,14 +6,18 @@ import { AddButton } from "../components/UI";
 
 export default function Home() {
     const [state, setState] = React.useState({});
-    const { data } = useQuery({
+    const { data, refetch, isFetching } = useQuery({
         queryKey: ['clients'],
-        queryFn: () => { return api.get('/clients/list').then(res => res.data) }
+        queryFn: () => { return api.get('/clients/list' + (state.search ? '?search=' + state.search : '')).then(res => res.data) }
     })
-    let filtered = data?.filter(e => {
-        if (!state.search) return true;
-        return e.name?.toLowerCase().includes(state.search?.toLowerCase()) || e.address?.toLowerCase().includes(state.search?.toLowerCase())
-    })
+    let filtered = data
+
+    useEffect(() => {
+        let t = setTimeout(() => {
+            refetch();
+        }, 800)
+        return () => clearTimeout(t);
+    }, [state.search])
 
     return (
         <div>
@@ -35,7 +39,7 @@ export default function Home() {
                 />
             </div>
             <div class="p-16 col g-16" style={{ height: 'calc(100vh - 200px)', overflow: 'scroll', marginTop: -10 }}>
-                {filtered && filtered.map(e => (
+                {!isFetching && filtered && filtered.map(e => (
                     <div className="card" onClick={() => nav('/client/view', { query: { clientId: e.id } })}>
 
                         <div class="row space-between">
@@ -67,6 +71,9 @@ export default function Home() {
                     </div> */}
 
                     </div>))}
+                {isFetching && <div class="row center" style={{ padding: 50 }}>
+                    Loading...
+                </div>}
             </div>
 
 

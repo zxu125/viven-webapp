@@ -149,7 +149,7 @@ const styles = {
     display: "flex",
     alignItems: "flex-end",
     justifyContent: "center",
-    zIndex: 9999,
+    zIndex: 99999,
     padding: 10,
     WebkitTapHighlightColor: "transparent",
   },

@@ -3,6 +3,7 @@ import { nav } from "../app/router.js";
 import { api } from "../app/api.js";
 import { Edit } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
+import { fromDatetimeLocal, toDatetimeLocal } from "../app/functions.js";
 
 export default function OrderDetails({ query }) {
   const orderId = query.orderId;
@@ -17,7 +18,8 @@ export default function OrderDetails({ query }) {
       try {
         let o = await api.get("/orders/view/" + orderId)
         o.data.cancelled = [1, 2].includes(o.data.statusId);
-        // alert(JSON.stringify(o.data))
+        o.data.deliveryDate = toDatetimeLocal(new Date(o.data.deliveryDate || o.data.orderDate));
+        alert(JSON.stringify(o.data))
         setOrder(o.data);
         setSavedOrder(o.data);
         setIsLoading(false);
@@ -54,7 +56,8 @@ export default function OrderDetails({ query }) {
                   id: order.id,
                   totalAmount: order.totalAmount,
                   note: order.note,
-                  priority: order.priority
+                  priority: order.priority,
+                  deliveryDate:fromDatetimeLocal(new Date(order.deliveryDate)),
                 }).then(() => {
                   queryClient.invalidateQueries(['orders']);
                   queryClient.invalidateQueries(['ordersHistory']);
@@ -71,109 +74,116 @@ export default function OrderDetails({ query }) {
         </div>
       </div>
       <div style={{ height: '85vh', overflow: "scroll" }}>
-        {mode == 'view' ? <div class="p-16 col g-16">
-          <div class="card">
-            <div class="row space-between">
-              <div>
-                <div class="f-sm text-secondary">ИД</div>
-                <div class="f-lg f-semibold">{order.client.name}</div>
+        {mode == 'view' ?
+          <div class="p-16 col g-16">
+            <div class="card">
+              <div class="row space-between">
+                <div>
+                  <div class="f-sm text-secondary">ИД</div>
+                  <div class="f-lg f-semibold">{order.client.name}</div>
+                </div>
               </div>
+              <div class="row space-between">
+                <div>
+                  <div class="f-sm text-secondary">Номер</div>
+                  <div class="f-lg f-semibold">{order.client.phone}</div>
+                </div>
+              </div>
+              {order.client.phone2 && <div class="row space-between">
+                <div>
+                  <div class="f-sm text-secondary">Номер 2</div>
+                  <div class="f-lg f-semibold">{order.client.phone2}</div>
+                </div>
+              </div>}
+              <div class="row space-between">
+                <div>
+                  <div class="f-sm text-secondary">Адрес</div>
+                  <div class="f-lg f-semibold">{order.client.address || '-'}</div>
+                </div>
+              </div>
+              <div class="row space-between">
+                <div>
+                  <div class="f-sm text-secondary">Дата заказа</div>
+                  <div class="f-lg f-semibold">{new Date(order.orderDate || order.createdAt).toLocaleDateString() || '-'}</div>
+                </div>
+              </div>
+              {!order.cancelled && <div class="row space-between">
+                <div>
+                  <div class="f-sm text-secondary">Дата доставки</div>
+                  <div class="f-lg f-semibold">{new Date(order.deliveryDate || order.orderDate).toLocaleString() || '-'}</div>
+                </div>
+              </div>}
+              {order.cancelled && <div class="row space-between">
+                <div>
+                  <div class="f-sm text-secondary">Дата {order.statusId == 2 ? 'доставки' : 'отмены'}</div>
+                  <div class="f-lg f-semibold">{new Date(order.completedDate).toLocaleDateString() || '-'}</div>
+                </div>
+              </div>}
             </div>
-            <div class="row space-between">
-              <div>
-                <div class="f-sm text-secondary">Номер</div>
-                <div class="f-lg f-semibold">{order.client.phone}</div>
-              </div>
-            </div>
-            {order.client.phone2 && <div class="row space-between">
-              <div>
-                <div class="f-sm text-secondary">Номер 2</div>
-                <div class="f-lg f-semibold">{order.client.phone2}</div>
-              </div>
-            </div>}
-            <div class="row space-between">
-              <div>
-                <div class="f-sm text-secondary">Адрес</div>
-                <div class="f-lg f-semibold">{order.client.address || '-'}</div>
-              </div>
-            </div>
-            <div class="row space-between">
-              <div>
-                <div class="f-sm text-secondary">Дата заказа</div>
-                <div class="f-lg f-semibold">{new Date(order.orderDate || order.createdAt).toLocaleDateString() || '-'}</div>
-              </div>
-            </div>
-            {order.cancelled && <div class="row space-between">
-              <div>
-                <div class="f-sm text-secondary">Дата {order.statusId == 2 ? 'доставки' : 'отмены'}</div>
-                <div class="f-lg f-semibold">{new Date(order.completedDate).toLocaleDateString() || '-'}</div>
-              </div>
-            </div>}
-          </div>
 
-          <div class="card">
-            <div class="row space-between">
-              <div>
-                <div class="f-sm text-secondary">Статус</div>
-                <div class="f-lg f-semibold" style={{ color: order.status.textColor }}>{order.status.ru}</div>
+            <div class="card">
+              <div class="row space-between">
+                <div>
+                  <div class="f-sm text-secondary">Статус</div>
+                  <div class="f-lg f-semibold" style={{ color: order.status.textColor }}>{order.status.ru}</div>
+                </div>
+              </div>
+              <div class="row space-between">
+                <div>
+                  <div class="f-sm text-secondary">Бутылей</div>
+                  <div class="f-lg f-semibold">{order.totalAmount}</div>
+                </div>
+              </div>
+              {order.statusId == 2 &&
+                <>
+                  <div class="row space-between">
+                    <div>
+                      <div class="f-sm text-secondary">Дано</div>
+                      <div class="f-lg f-semibold">{order.delivery?.countGiven + '' || '-'}</div>
+                    </div>
+                  </div>
+                  <div class="row space-between">
+                    <div>
+                      <div class="f-sm text-secondary">Взято</div>
+                      <div class="f-lg f-semibold">{order.delivery?.countGotten + '' || '-'}</div>
+                    </div>
+                  </div>
+                </>
+              }
+              <div class="row space-between">
+                <div>
+                  <div class="f-sm text-secondary">Цена</div>
+                  <div class="f-lg f-semibold">{order.price + '' || '-'} сум</div>
+                </div>
+              </div>
+              <div class="row space-between">
+                <div>
+                  <div class="f-sm text-secondary">Текущий остаток</div>
+                  <div class="f-lg f-semibold">{order.currentStock + '' || '-'}</div>
+                </div>
+              </div>
+              <div class="row space-between">
+                <div>
+                  <div class="f-sm text-secondary">Примечание</div>
+                  <div class="f-md f-semibold">{order.note || '-'}</div>
+                </div>
               </div>
             </div>
-            <div class="row space-between">
-              <div>
-                <div class="f-sm text-secondary">Бутылей</div>
-                <div class="f-lg f-semibold">{order.totalAmount}</div>
-              </div>
-            </div>
-            {order.statusId == 2 &&
+
+            <button class="btn btn-ghost" onClick={() => nav("/client/view", { query: { clientId: order.client.id } })}>
+              Подробнее о клиенте
+            </button>
+            {![1, 2].includes(order.statusId) &&
               <>
-                <div class="row space-between">
-                  <div>
-                    <div class="f-sm text-secondary">Дано</div>
-                    <div class="f-lg f-semibold">{order.delivery?.countGiven + '' || '-'}</div>
-                  </div>
-                </div>
-                <div class="row space-between">
-                  <div>
-                    <div class="f-sm text-secondary">Взято</div>
-                    <div class="f-lg f-semibold">{order.delivery?.countGotten + '' || '-'}</div>
-                  </div>
-                </div>
+                <button class="btn btn-primary" onClick={() => nav("/order/confirm", { query: { orderId: order.id, confirm: true, next: '/order/view?orderId=' + order.id } })}>
+                  Подтвердить заказ
+                </button>
+                <button class="btn btn-danger" onClick={() => nav("/order/confirm", { query: { orderId: order.id, confirm: false, next: '/order/view?orderId=' + order.id } })}>
+                  Отменить заказ
+                </button>
               </>
             }
-            <div class="row space-between">
-              <div>
-                <div class="f-sm text-secondary">Цена</div>
-                <div class="f-lg f-semibold">{order.price + '' || '-'} сум</div>
-              </div>
-            </div>
-            <div class="row space-between">
-              <div>
-                <div class="f-sm text-secondary">Текущий остаток</div>
-                <div class="f-lg f-semibold">{order.currentStock + '' || '-'}</div>
-              </div>
-            </div>
-            <div class="row space-between">
-              <div>
-                <div class="f-sm text-secondary">Примечание</div>
-                <div class="f-md f-semibold">{order.note || '-'}</div>
-              </div>
-            </div>
           </div>
-
-          <button class="btn btn-ghost" onClick={() => nav("/client/view", { query: { clientId: order.client.id } })}>
-            Подробнее о клиенте
-          </button>
-          {![1, 2].includes(order.statusId) &&
-            <>
-              <button class="btn btn-primary" onClick={() => nav("/order/confirm", { query: { orderId: order.id, confirm: true, next: '/order/view?orderId=' + order.id } })}>
-                Подтвердить заказ
-              </button>
-              <button class="btn btn-danger" onClick={() => nav("/order/confirm", { query: { orderId: order.id, confirm: false, next: '/order/view?orderId=' + order.id } })}>
-                Отменить заказ
-              </button>
-            </>
-          }
-        </div>
           :
           <div class="p-16 col g-16">
             <div class="card">
@@ -199,6 +209,12 @@ export default function OrderDetails({ query }) {
                 <div>
                   <div class="f-sm text-secondary">Адрес</div>
                   <input readOnly={true} class="input disabled" value={order.client.address} onChange={e => setOrder(s => ({ ...s, client: { ...s.client, address: e.target.value } }))} />
+                </div>
+              </div>
+              <div class="row space-between">
+                <div>
+                  <div class="f-sm text-secondary">Дата доставки</div>
+                  <input class="input" type="datetime-local" value={order.deliveryDate} onChange={e => setOrder(s => ({ ...s, deliveryDate: e.target.value }))} />
                 </div>
               </div>
             </div>
