@@ -31,7 +31,7 @@ export default function TabsLayout({ tab, showTabbar, orderId }) {
         </KeepAlive>
 
         <KeepAlive active={tab === "map"}>
-          <Map />
+          <Map query={route.query}/>
         </KeepAlive>
 
         <KeepAlive active={tab === "orders"}>

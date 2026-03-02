@@ -84,8 +84,8 @@ export default function BottomSheet({
           bottom: 0,
           height: computedHeight,
           maxHeight: "90vh",
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
+          borderTopLeftRadius: 14,
+          borderTopRightRadius: 14,
           zIndex: 99998,
           padding: 4,
           boxShadow: "0 -4px 20px rgba(0,0,0,0.15)",
@@ -116,7 +116,7 @@ export default function BottomSheet({
               cursor: "pointer",
             }}
           >
-            <X size={24} color="#888" />
+            <X size={28} color="#888" />
           </button>
         </div>
         <div style={{ overflowY: 'scroll', overflowX:'hidden', marginTop: '7vh', paddingTop: 4, 

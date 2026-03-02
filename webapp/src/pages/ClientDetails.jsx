@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { nav } from "../app/router.js";
 import { api } from "../app/api.js";
-import { Edit, MapPin, Pin } from "lucide-react";
+import { Edit, Eye, Map, MapPin, Pin } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { parseGeoCoords } from "../app/functions.js";
 import YandexLocationPickerModal from "../components/YandexLocationPickerModal.jsx";
@@ -41,9 +41,10 @@ export default function ClientDetails({ query }) {
                     </div>
                 </div>
                 <div>
-                    {mode == 'view' ? <Edit
-                        size={22} class="cursor-pointer"
-                        onClick={() => setMode('edit')} />
+                    {mode == 'view' ?
+                        <Edit
+                            size={22} class="cursor-pointer"
+                            onClick={() => setMode('edit')} />
                         :
                         <div class="row g-8">
                             <button onClick={() => setMode('view')} class="btn btn-sm">Отмена</button>
@@ -73,78 +74,85 @@ export default function ClientDetails({ query }) {
                 </div>
             </div>
             <div style={{ height: '85vh', overflow: "scroll" }}>
-                {mode == 'view' ? <div class="p-16 col g-16">
-                    <div class="card">
-                        <div class="f-lg f-bold text-primary" style={{ marginBottom: 6 }}>
-                            Инфо
-                        </div>
-                        <div class="row space-between">
-                            <div>
-                                <div class="f-sm text-secondary">ИД</div>
-                                <div class="f-lg f-semibold">{client.name}</div>
+                {mode == 'view' ?
+                    <div class="p-16 col g-16">
+                        <div class="card">
+                            <div class="f-lg f-bold text-primary" style={{ marginBottom: 6 }}>
+                                Инфо
+                            </div>
+                            <div class="row space-between">
+                                <div>
+                                    <div class="f-sm text-secondary">ИД</div>
+                                    <div class="f-lg f-semibold">{client.name}</div>
+                                </div>
+                            </div>
+                            <div class="row space-between">
+                                <div>
+                                    <div class="f-sm text-secondary">Номер</div>
+                                    <div class="f-lg f-semibold">{client.phone}</div>
+                                </div>
+                            </div>
+                            <div class="row space-between">
+                                <div>
+                                    <div class="f-sm text-secondary">Номер 2</div>
+                                    <div class="f-lg f-semibold">{client.phone2 || '-'}</div>
+                                </div>
                             </div>
                         </div>
-                        <div class="row space-between">
-                            <div>
-                                <div class="f-sm text-secondary">Номер</div>
-                                <div class="f-lg f-semibold">{client.phone}</div>
-                            </div>
-                        </div>
-                        <div class="row space-between">
-                            <div>
-                                <div class="f-sm text-secondary">Номер 2</div>
-                                <div class="f-lg f-semibold">{client.phone2 || '-'}</div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="card">
-                        <div class="f-lg f-bold text-primary" style={{ marginBottom: 6 }}>
-                            Детали
-                        </div>
-                        <div class="row space-between">
-                            <div>
-                                <div class="f-sm text-secondary">Остаток</div>
-                                <div class="f-lg f-semibold">{client.quantity || '-'}</div>
+                        <div class="card">
+                            <div class="f-lg f-bold text-primary" style={{ marginBottom: 6 }}>
+                                Детали
+                            </div>
+                            <div class="row space-between">
+                                <div>
+                                    <div class="f-sm text-secondary">Остаток</div>
+                                    <div class="f-lg f-semibold">{client.quantity || '-'}</div>
+                                </div>
+                            </div>
+                            <div class="row space-between">
+                                <div>
+                                    <div class="f-sm text-secondary">Адрес</div>
+                                    <div class="f-lg f-semibold">{client.address || '-'}</div>
+                                </div>
+                            </div>
+                            <div class="row space-between" style={{ width: '70%' }}>
+                                <div>
+                                    <div class="f-sm text-secondary">Локация</div>
+                                    <div class="f-lg f-semibold">{client.location?.latitude + ' ' + client.location?.longitude}</div>
+                                </div>
+                                <div style={{ position: 'relative' }}>
+                                    <Eye size={26} color="grey" onClick={() => setMapOpen(true)} class="cursor-pointer"
+                                        style={{ position: 'absolute', left: -10, top: -5 }} />
+                                    {/* <Map size={25} color="grey" onClick={() => nav('/map', { query: { clientId: client.id } })} class="cursor-pointer"
+                                        style={{ position: 'absolute', left: 32, top: -5 }} /> */}
+                                </div>
+                            </div>
+                            <div class="row space-between">
+                                <div>
+                                    <div class="f-sm text-secondary">Регион</div>
+                                    <div class="f-lg f-semibold">{client.region?.name || '-'}</div>
+                                </div>
+                            </div>
+                            <div class="row space-between">
+                                <div>
+                                    <div class="f-sm text-secondary">Примечание</div>
+                                    <div class="f-lg f-semibold">{client.deliveryNote || '-'}</div>
+                                </div>
                             </div>
                         </div>
-                        <div class="row space-between">
-                            <div>
-                                <div class="f-sm text-secondary">Адрес</div>
-                                <div class="f-lg f-semibold">{client.address || '-'}</div>
-                            </div>
-                        </div>
-                        <div class="row space-between">
-                            <div>
-                                <div class="f-sm text-secondary">Локация</div>
-                                <div class="f-lg f-semibold">{client.location?.latitude + ' ' + client.location?.longitude}</div>
-                            </div>
-                        </div>
-                        <div class="row space-between">
-                            <div>
-                                <div class="f-sm text-secondary">Регион</div>
-                                <div class="f-lg f-semibold">{client.region?.name || '-'}</div>
-                            </div>
-                        </div>
-                        <div class="row space-between">
-                            <div>
-                                <div class="f-sm text-secondary">Примечание</div>
-                                <div class="f-lg f-semibold">{client.deliveryNote || '-'}</div>
-                            </div>
-                        </div>
-                    </div>
-                    {client.order ?
-                        <button class="btn btn-primary" onClick={() => nav('/order/view', { query: { orderId: client.order.id } })}>
-                            Просмотр заказа
-                        </button> :
-                        <button class="btn btn-primary" onClick={() => nav('/order/create', { query: { clientId: client.id } })}>
-                            Новый заказ
+                        {client.order ?
+                            <button class="btn btn-primary" onClick={() => nav('/order/view', { query: { orderId: client.order.id } })}>
+                                Просмотр заказа
+                            </button> :
+                            <button class="btn btn-primary" onClick={() => nav('/order/create', { query: { clientId: client.id } })}>
+                                Новый заказ
+                            </button>
+                        }
+                        <button class="btn" onClick={() => nav('/order/history', { query: { clientId: client.id, name: client.name } })}>
+                            История заказов
                         </button>
-                    }
-                    <button class="btn" onClick={() => nav('/order/history', { query: { clientId: client.id, name: client.name } })}>
-                        История заказов
-                    </button>
-                </div>
+                    </div>
                     :
                     <div class="p-16 col g-16">
                         <div class="card">
@@ -225,6 +233,7 @@ export default function ClientDetails({ query }) {
             </div>
             <YandexLocationPickerModal
                 open={mapOpen}
+                pickable={mode == 'edit'}
                 onClose={() => setMapOpen(false)}
                 initialPoint={{ lat: client.location.latitude, lon: client.location.longitude, zoom: 12 }}
                 onPick={(p) => { setClient(s => ({ ...s, location: { latitude: p.lat, longitude: p.lon } })) }}

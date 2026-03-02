@@ -60,7 +60,7 @@ export default function OrderCreate({ query }) {
                                 priority: order.priority,
                                 orderDate: new Date(),
                                 clientId: order.client.id,
-                                deliveryDate: order.deliveryDate + ':00.000Z',
+                                deliveryDate: order.deliveryDate ? order.deliveryDate + ':00.000Z' : null,
                             }).then(() => {
                                 alert('Сохранено');
                                 queryClient.invalidateQueries(['orders']);
@@ -133,7 +133,7 @@ export default function OrderCreate({ query }) {
                         <div class="row space-between">
                             <div>
                                 <div class="f-sm text-secondary">Бутылей</div>
-                                <input type="number" class="input" value={Number(order.totalAmount)} onChange={e => setOrder(s => ({ ...s, totalAmount: Math.max(0, Number(e.target.value)) }))} />
+                                <input class="input" value={Number(order.totalAmount)} onChange={e => setOrder(s => ({ ...s, totalAmount: Math.max(0, Number(e.target.value)) }))} />
                             </div>
                         </div>
                         <div class="row space-between">

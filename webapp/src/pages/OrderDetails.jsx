@@ -19,7 +19,7 @@ export default function OrderDetails({ query }) {
         let o = await api.get("/orders/view/" + orderId)
         o.data.cancelled = [1, 2].includes(o.data.statusId);
         o.data.deliveryDate = toDatetimeLocal(new Date(o.data.deliveryDate || o.data.orderDate));
-        alert(JSON.stringify(o.data))
+        // alert(JSON.stringify(o.data))
         setOrder(o.data);
         setSavedOrder(o.data);
         setIsLoading(false);

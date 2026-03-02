@@ -153,3 +153,54 @@ export function openYandexRoute(points, mode = "auto") {
         setTimeout(openWeb, 700);
     }, 700);
 }
+
+export function openYandexRouteFromMyLocation(points, mode = "auto") {
+    if (!Array.isArray(points) || points.length < 1) return;
+
+    const to = points[points.length - 1];
+    const vias = points.slice(0, -1); // все кроме последней — как via
+
+    const viaParams = vias
+        .map((p, i) => `lat_via_${i}=${encodeURIComponent(p.lat)}&lon_via_${i}=${encodeURIComponent(p.lon)}`)
+        .join("&");
+
+    // Yandex Maps: старт будет "моя геопозиция", если lat_from/lon_from не указаны
+    const appUrlMaps =
+        `yandexmaps://build_route_on_map/?lat_to=${encodeURIComponent(to.lat)}&lon_to=${encodeURIComponent(to.lon)}` +
+        (viaParams ? `&${viaParams}` : "");
+
+    // Yandex Navigator: тоже можно без lat_from/lon_from
+    const appUrlNavi =
+        `yandexnavi://build_route_on_map?lat_to=${encodeURIComponent(to.lat)}&lon_to=${encodeURIComponent(to.lon)}` +
+        (viaParams ? `&${viaParams}` : "");
+
+    const webRtext = points.map(p => `${p.lat},${p.lon}`).join("~");
+    const webUrl = `https://yandex.ru/maps/?rtext=${encodeURIComponent(webRtext)}&rtt=${encodeURIComponent(mode)}`;
+
+    const tg = window.Telegram?.WebApp;
+    const openWeb = () => (tg?.openLink ? tg.openLink(webUrl) : window.open(webUrl, "_blank"));
+
+    // важно: deep-link лучше запускать ТОЛЬКО по клику пользователя (iOS/Telegram часто режет иначе)
+    window.location.href = appUrlMaps;
+
+    setTimeout(() => {
+        window.location.href = appUrlNavi;
+        setTimeout(openWeb, 700);
+    }, 700);
+}
+
+export function formatPhone(phone) {
+    let clean = String(phone || "").replace(/[^\d+]/g, "");
+    if (!clean) return "";
+    try {
+        if (!clean.startsWith("+")) clean = "+998" + clean;
+    } catch (e) {
+        alert(e.message);
+    }
+    // Пример форматирования: +998 (12) 456-78-90
+    const match = clean.match(/^(\+?\d{1,3})(\d{2})(\d{3})(\d{2})(\d{2})$/);
+    if (match) {
+        return `${match[1]} (${match[2]}) ${match[3]}-${match[4]}-${match[5]}`;
+    }
+    return clean; // если не подходит под формат, возвращаем как есть
+}
