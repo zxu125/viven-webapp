@@ -158,35 +158,42 @@ export function openYandexRouteFromMyLocation(points, mode = "auto") {
     if (!Array.isArray(points) || points.length < 1) return;
 
     const to = points[points.length - 1];
-    const vias = points.slice(0, -1); // все кроме последней — как via
+    const vias = points.slice(0, -1);
 
     const viaParams = vias
         .map((p, i) => `lat_via_${i}=${encodeURIComponent(p.lat)}&lon_via_${i}=${encodeURIComponent(p.lon)}`)
         .join("&");
 
-    // Yandex Maps: старт будет "моя геопозиция", если lat_from/lon_from не указаны
-    const appUrlMaps =
-        `yandexmaps://build_route_on_map/?lat_to=${encodeURIComponent(to.lat)}&lon_to=${encodeURIComponent(to.lon)}` +
-        (viaParams ? `&${viaParams}` : "");
-
-    // Yandex Navigator: тоже можно без lat_from/lon_from
+    // По доке: если указать только конечную точку, старт = текущее местоположение :contentReference[oaicite:2]{index=2}
     const appUrlNavi =
         `yandexnavi://build_route_on_map?lat_to=${encodeURIComponent(to.lat)}&lon_to=${encodeURIComponent(to.lon)}` +
-        (viaParams ? `&${viaParams}` : "");
+        (viaParams ? `&${viaParams}` : "") +
+        (mode ? `&rtt=${encodeURIComponent(mode)}` : "");
 
-    const webRtext = points.map(p => `${p.lat},${p.lon}`).join("~");
-    const webUrl = `https://yandex.ru/maps/?rtext=${encodeURIComponent(webRtext)}&rtt=${encodeURIComponent(mode)}`;
+    // Web fallback: если у тебя ОДНА точка, лучше открыть карточку/поиск,
+    // а не "rtext" (чтобы не ловить странные маршруты)
+    const webUrl =
+        points.length >= 2
+            ? `https://yandex.ru/maps/?mode=routes&rtext=${encodeURIComponent(points.map(p => `${p.lat},${p.lon}`).join("~"))}&rtt=${encodeURIComponent(mode)}`
+            : `https://yandex.ru/maps/?ll=${encodeURIComponent(to.lon)},${encodeURIComponent(to.lat)}&z=16`; // ll = lon,lat в web
 
     const tg = window.Telegram?.WebApp;
     const openWeb = () => (tg?.openLink ? tg.openLink(webUrl) : window.open(webUrl, "_blank"));
 
-    // важно: deep-link лучше запускать ТОЛЬКО по клику пользователя (iOS/Telegram часто режет иначе)
+    let opened = false;
+    const onVis = () => {
+        if (document.hidden) opened = true; // ушли в навигатор/другое приложение
+    };
+    document.addEventListener("visibilitychange", onVis, { once: true });
+
     window.location.href = appUrlNavi;
 
-    setTimeout(() => {
-        window.location.href = appUrlMaps;
-        setTimeout(openWeb, 700);
-    }, 700);
+    const t = setTimeout(() => {
+        if (!opened) openWeb();
+    }, 900);
+
+    // на всякий случай чистим
+    setTimeout(() => clearTimeout(t), 2000);
 }
 
 export function formatPhone(phone) {
