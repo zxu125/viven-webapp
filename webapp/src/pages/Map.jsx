@@ -5,7 +5,7 @@ import { api } from "../app/api";
 import { ClientSheetContent } from "../components/ClientSheetContent";
 import { Filter, Navigation, Pencil, Phone, Route, Send } from "lucide-react";
 import { nav } from "../app/router";
-import { callPhone, formatPhone, openTelegramByPhone, openYandexRoute, openYandexRouteFromMyLocation, toDateInputValue } from "../app/functions";
+import { callPhone, formatPhone, openDeepLink, openTelegramByPhone, openYandexRoute, openYandexRouteFromMyLocation, toDateInputValue } from "../app/functions";
 import useTelegramTheme from "../hooks/useTelegramTheme";
 import SelectMultiOption from "../components/SelectMultiOption";
 
@@ -278,7 +278,7 @@ export function Map({ query }) {
                                         <button className="btn btn-sm" onClick={() => {
                                             callPhone(selectedPoint?.client?.phone2);
                                         }}>
-                                            <Phone size={20} /> 
+                                            <Phone size={20} />
                                         </button>
                                         <button className="btn btn-sm" onClick={() => {
                                             openTelegramByPhone(selectedPoint?.client?.phone2);

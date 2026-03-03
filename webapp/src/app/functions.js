@@ -155,45 +155,13 @@ export function openYandexRoute(points, mode = "auto") {
 }
 
 export function openYandexRouteFromMyLocation(points, mode = "auto") {
-    if (!Array.isArray(points) || points.length < 1) return;
-
     const to = points[points.length - 1];
-    const vias = points.slice(0, -1);
-
-    const viaParams = vias
-        .map((p, i) => `lat_via_${i}=${encodeURIComponent(p.lat)}&lon_via_${i}=${encodeURIComponent(p.lon)}`)
-        .join("&");
-
-    // По доке: если указать только конечную точку, старт = текущее местоположение :contentReference[oaicite:2]{index=2}
-    const appUrlNavi =
-        `yandexnavi://build_route_on_map?lat_to=${encodeURIComponent(to.lat)}&lon_to=${encodeURIComponent(to.lon)}` +
-        (viaParams ? `&${viaParams}` : "") +
-        (mode ? `&rtt=${encodeURIComponent(mode)}` : "");
-
-    // Web fallback: если у тебя ОДНА точка, лучше открыть карточку/поиск,
-    // а не "rtext" (чтобы не ловить странные маршруты)
     const webUrl =
-        points.length >= 2
-            ? `https://yandex.ru/maps/?mode=routes&rtext=${encodeURIComponent(points.map(p => `${p.lat},${p.lon}`).join("~"))}&rtt=${encodeURIComponent(mode)}`
-            : `https://yandex.ru/maps/?ll=${encodeURIComponent(to.lon)},${encodeURIComponent(to.lat)}&z=16`; // ll = lon,lat в web
+        `https://yandex.ru/maps/?mode=routes` +
+        `&rtext=~${to.lat},${to.lon}` +
+        `&rtt=${encodeURIComponent(mode)}`;
 
-    const tg = window.Telegram?.WebApp;
-    const openWeb = () => (tg?.openLink ? tg.openLink(webUrl) : window.open(webUrl, "_blank"));
-
-    let opened = false;
-    const onVis = () => {
-        if (document.hidden) opened = true; // ушли в навигатор/другое приложение
-    };
-    document.addEventListener("visibilitychange", onVis, { once: true });
-
-    window.location.href = appUrlNavi;
-
-    const t = setTimeout(() => {
-        if (!opened) openWeb();
-    }, 900);
-
-    // на всякий случай чистим
-    setTimeout(() => clearTimeout(t), 2000);
+    Telegram.WebApp.openLink(webUrl);
 }
 
 export function formatPhone(phone) {
