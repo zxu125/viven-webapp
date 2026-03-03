@@ -150,10 +150,11 @@ export default function ClientDetails() {
                 </div>
             </div>
             <YandexLocationPickerModal
+                pickable={true}
                 open={mapOpen}
                 onClose={() => setMapOpen(false)}
                 initialCenter={{ lat: 41.311081, lon: 69.240562, zoom: 12 }}
-                onPick={(p) => { alert(JSON.stringify(p)); setClient(s => ({ ...s, location: { latitude: p.lat, longitude: p.lon } })) }}
+                onPick={(p) => { setClient(s => ({ ...s, location: { latitude: p.lat, longitude: p.lon } })) }}
             />
         </div >
     );

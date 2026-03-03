@@ -181,10 +181,10 @@ export function openYandexRouteFromMyLocation(points, mode = "auto") {
     const openWeb = () => (tg?.openLink ? tg.openLink(webUrl) : window.open(webUrl, "_blank"));
 
     // важно: deep-link лучше запускать ТОЛЬКО по клику пользователя (iOS/Telegram часто режет иначе)
-    window.location.href = appUrlMaps;
+    window.location.href = appUrlNavi;
 
     setTimeout(() => {
-        window.location.href = appUrlNavi;
+        window.location.href = appUrlMaps;
         setTimeout(openWeb, 700);
     }, 700);
 }

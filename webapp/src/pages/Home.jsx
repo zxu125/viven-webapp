@@ -2,9 +2,14 @@ import React from "react";
 import { nav } from "../app/router";
 import { ChevronRight, LogOut } from 'lucide-react';
 import { useAuth } from "../context/AuthContext";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "../app/api";
 export default function Home() {
   const [count, setCount] = React.useState(0);
   const { logout } = useAuth();
+  const { data } = useQuery({
+    queryFn: () => api.get('/home').then(res => res.data)
+  })
   return (
     <div>
 
@@ -20,11 +25,11 @@ export default function Home() {
           <div style={{ padding: 8, width: '50%' }}>
             <div class="row space-between">
               <div class="f-lg">Заказы:</div>
-              <div class="f-lg">16</div>
+              <div class="f-lg">{data?.orderCount || '-'}</div>
             </div>
             <div class="row space-between" style={{ marginTop: 10 }}>
               <div class="f-lg">Остатки:</div>
-              <div class="f-lg">50</div>
+              <div class="f-lg">{data?.totalStock || '-'}</div>
             </div>
           </div>
         </div>
