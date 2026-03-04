@@ -4,6 +4,7 @@ import { api } from "../app/api.js";
 import { Edit } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import SelectField from "../components/SelectField.jsx";
+import { fromDatetimeLocal } from "../app/functions.js";
 
 export default function OrderCreate({ query }) {
     const [mode, setMode] = useState("view"); // view|edit
@@ -60,7 +61,7 @@ export default function OrderCreate({ query }) {
                                 priority: order.priority,
                                 orderDate: new Date(),
                                 clientId: order.client.id,
-                                deliveryDate: order.deliveryDate ? order.deliveryDate + ':00.000Z' : null,
+                                deliveryDate: order.deliveryDate ? fromDatetimeLocal(order.deliveryDate) : null,
                             }).then(() => {
                                 alert('Сохранено');
                                 queryClient.invalidateQueries(['orders']);

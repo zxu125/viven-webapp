@@ -1,16 +1,17 @@
 import React, { useEffect, useRef } from "react";
 import BottomSheet from "../components/BottomSheet";
-import { useQuery } from "@tanstack/react-query";
+import { QueryClient, useQuery } from "@tanstack/react-query";
 import { api } from "../app/api";
 import { ClientSheetContent } from "../components/ClientSheetContent";
 import { Filter, Navigation, Pencil, Phone, Route, Send } from "lucide-react";
 import { nav } from "../app/router";
-import { callPhone, formatPhone, openDeepLink, openTelegramByPhone, openYandexRoute, openYandexRouteFromMyLocation, toDateInputValue } from "../app/functions";
+import { callPhone, formatPhone, openTelegramByPhone, openYandexRoute, openYandexRouteFromMyLocation, toDateInputValue } from "../app/functions";
 import useTelegramTheme from "../hooks/useTelegramTheme";
 import SelectMultiOption from "../components/SelectMultiOption";
 
 export function Map({ query }) {
     const [regions, setRegions] = React.useState(null);
+    const queryClient = new QueryClient();
 
     const containerRef = useRef(null);
     const [regionSelectOpen, setRegionSelectOpen] = React.useState(false);
@@ -346,6 +347,7 @@ export function Map({ query }) {
                                             }).then(() => {
                                                 alert('Статус изменен на "В пути"');
                                                 selectPoint(null);
+                                                queryClient.invalidateQueries(['orders']);
                                                 refetch();
                                             }).catch(e => {
                                                 alert('Ошибка при изменении статуса' + (e.message || JSON.stringify(e)))
@@ -371,6 +373,7 @@ export function Map({ query }) {
                                                     }).then(() => {
                                                         alert('Статус изменен на "Новый"');
                                                         selectPoint(null);
+                                                        queryClient.invalidateQueries(['map']);
                                                         refetch();
                                                     }).catch(e => {
                                                         alert('Ошибка при изменении статуса' + (e.message || JSON.stringify(e)))

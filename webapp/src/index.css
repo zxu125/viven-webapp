@@ -148,6 +148,7 @@ body {
 /* =========================================================
    RADIUS (sm/md/l)
    ========================================================= */
+.r-xs { border-radius: 2px; }
 .r-sm { border-radius: 10px; }
 .r-md { border-radius: 14px; }
 .r-lg { border-radius: 20px; }
@@ -266,6 +267,7 @@ body {
 }
 .btn:active { transform: scale(0.99); }
 .btn-sm { padding: 8px 12px; font-size: 14px; }
+.btn-xs { padding: 5px 9px; font-size: 13px; }
 .btn-primary {
   background: var(--primary);
   border-color: rgba(0,0,0,0);
