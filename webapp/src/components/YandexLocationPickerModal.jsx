@@ -1,3 +1,4 @@
+import { X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
 export default function YandexPickerV3({ open, onClose, onPick, pickable, initialPoint = { lat: 41.311081, lon: 69.240562, zoom: 12 } }) {
@@ -103,7 +104,9 @@ export default function YandexPickerV3({ open, onClose, onPick, pickable, initia
       <div style={{ width: "min(720px,100%)", background: "var(--surface)", borderRadius: 18, overflow: "hidden" }} onPointerDown={(e) => e.stopPropagation()}>
         <div style={{ display: "flex", alignItems: "center", padding: "10px 14px", borderBottom: "1px solid rgba(0,0,0,0.08)" }}>
           <div style={{ fontWeight: 900, flex: 1 }}>Выберите точку</div>
-          <button onClick={onClose} style={{ backgroundColor: '#0000', width: 36, height: 36, fontSize: 18 }}>✕</button>
+          <button onClick={onClose} style={{ backgroundColor: '#0000' }}>
+            <X style={{position:'relative',left:12}}></X>
+          </button>
         </div>
 
         <div style={{ height: "55vh", background: "#f2f2f2", position: "relative" }}>
@@ -121,7 +124,7 @@ export default function YandexPickerV3({ open, onClose, onPick, pickable, initia
           </div>
 
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
-            <button onClick={onClose} style={{ padding: "10px 14px", borderRadius: 12, border: "1px solid rgba(0,0,0,0.12)", background: "#fff", fontWeight: 900 }}>
+            <button onClick={onClose} className="btn btn-sm">
               Отмена
             </button>
             <button
@@ -129,7 +132,7 @@ export default function YandexPickerV3({ open, onClose, onPick, pickable, initia
                 pickable && onPick?.({ lat: point.lat, lon: point.lon });
                 onClose?.();
               }}
-              style={{ padding: "10px 14px", borderRadius: 12, border: "none", background: "rgba(0,122,255,0.18)", fontWeight: 900 }}
+              className="btn btn-sm btn-primary"
             >
               Готово
             </button>

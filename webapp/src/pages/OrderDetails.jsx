@@ -57,7 +57,7 @@ export default function OrderDetails({ query }) {
                   totalAmount: order.totalAmount,
                   note: order.note,
                   priority: order.priority,
-                  deliveryDate:fromDatetimeLocal(new Date(order.deliveryDate)),
+                  deliveryDate: fromDatetimeLocal(new Date(order.deliveryDate)),
                 }).then(() => {
                   queryClient.invalidateQueries(['orders']);
                   queryClient.invalidateQueries(['ordersHistory']);

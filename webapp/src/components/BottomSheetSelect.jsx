@@ -1,3 +1,4 @@
+import { X } from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 export function BottomSheetSelect({
@@ -96,7 +97,7 @@ export function BottomSheetSelect({
         <div style={styles.header}>
           <div style={styles.title}>{title}</div>
           <div style={styles.closeBtn} onClick={onClose} aria-label="close">
-            ✕
+            <X></X>
           </div>
         </div>
 

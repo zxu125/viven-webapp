@@ -216,7 +216,16 @@ export default function ClientDetails({ query }) {
                                 <div>
                                     <div class="f-sm text-secondary">Локация</div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                                        <input class="input" value={(client.location?.latitude || '') + ' ' + (client.location?.longitude || '')} onChange={e => setClient(s => ({ ...s, location: parseGeoCoords(e.target.value) }))} />
+                                        <input class="input" value={(client.location?.latitude || '') + ' ' + (client.location?.longitude || '')}
+                                            onChange={e => setClient(s => {
+                                                let l;
+                                                try {
+                                                    l = parseGeoCoords(e.target.value);
+                                                } catch (e) {
+                                                    alert(JSON.stringify(e))
+                                                }
+                                                return { ...s, location: l }
+                                            })} />
                                         <MapPin size={36} color="grey" onClick={() => setMapOpen(true)} />
                                     </div>
                                 </div>
@@ -235,7 +244,7 @@ export default function ClientDetails({ query }) {
                 open={mapOpen}
                 pickable={mode == 'edit'}
                 onClose={() => setMapOpen(false)}
-                initialPoint={{ lat: client.location.latitude, lon: client.location.longitude, zoom: 12 }}
+                initialPoint={{ lat: client.location?.latitude, lon: client.location?.longitude, zoom: 12 }}
                 onPick={(p) => { setClient(s => ({ ...s, location: { latitude: p.lat, longitude: p.lon } })) }}
             />
         </div >

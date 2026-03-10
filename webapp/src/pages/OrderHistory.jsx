@@ -49,7 +49,7 @@ export default function OrderHIstory({ query }) {
 
                 <input
                     class="input r-md"
-                    placeholder="Поиск по клиенту или пользователью"
+                    placeholder="Поиск"
                     onChange={e => setState(s => ({ ...s, search: e.target.value }))}
                 />
                 {/* <RefreshCw size={24} style={{ position: 'absolute', top: 29, right: 36 }} color="grey" onClick={() => refetch()} /> */}
@@ -59,16 +59,16 @@ export default function OrderHIstory({ query }) {
 
                     <div class="row space-between">
                         <div class="col">
-                            <div class="f-lg f-semibold">{e.client.name}</div>
+                            <div class="f-md f-semibold">{e.client.name}</div>
                             <div class="f-sm text-secondary">{e.client.address}</div>
                         </div>
 
-                        <div class={`badge ${e.statusId == 2 ? 'badge-success' : 'badge-danger'}`}>
+                        <div class="badge" style={{ height: 28, backgroundColor: e.status.color, color: e.status.textColor }}>
                             {e.status.ru}
                         </div>
                     </div>
 
-                    <div class="row space-between p-12" style={{ paddingLeft: 0, paddingRight: 0 }}>
+                    <div class="row space-between p-12" style={{ padding: 3 }}>
                         <div class="col">
                             <div class="f-sm text-secondary">Пользователь</div>
                             <div class="f-md f-medium">{e.user?.name}</div>
@@ -81,7 +81,10 @@ export default function OrderHIstory({ query }) {
                     </div>
 
                     <div class="row g-12">
-                        <button class="btn btn-primary btn-sm r-sm" onClick={() => nav('/order/view', { query: { orderId: e.id } })}>
+                        <button class="btn btn-primary btn-xs r-xs" onClick={() =>
+                            nav('/order/view', { query: { orderId: e.id } })
+                        }
+                            style={{ borderRadius: 10 }}>
                             Подробнее
                         </button>
                     </div>

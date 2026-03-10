@@ -34,22 +34,24 @@ export default function Home() {
             <div class="p-16 col g-16" >
                 <input
                     class="input r-md"
-                    placeholder="Поиск по клиенту или адресу"
+                    placeholder="Поиск"
                     onChange={e => setState(s => ({ ...s, search: e.target.value }))}
                 />
             </div>
             <div class="p-16 col g-16" style={{ height: 'calc(100vh - 200px)', overflow: 'scroll', marginTop: -10 }}>
                 {!isFetching && filtered && filtered.map(e => (
-                    <div className="card" onClick={() => nav('/client/view', { query: { clientId: e.id } })}>
+                    <div className="card"
+                        style={{ padding: 12 }}
+                        onClick={() => nav('/client/view', { query: { clientId: e.id } })}>
 
                         <div class="row space-between">
                             <div class="col">
                                 <div class="f-lg f-semibold">{e.name}</div>
-                                <div class="f-sm text-secondary">{e.address}</div>
+                                {/* <div class="f-sm text-secondary">{e.address}</div> */}
                             </div>
                         </div>
 
-                        <div class="row space-between p-12" style={{ paddingLeft: 0, paddingRight: 0 }}>
+                        <div class="row space-between p-8" style={{ paddingLeft: 0, paddingRight: 0 }}>
                             <div class="col">
                                 <div class="f-md f-medium">{e.phone}</div>
                             </div>

@@ -67,44 +67,49 @@ export function openTelegramByPhone(phone) {
 export function parseGeoCoords(input) {
     if (typeof input !== "string") return null;
 
-    // Нормализуем: убираем NBSP и лишние пробелы
-    const s = input.replace(/\u00A0/g, " ").trim();
+    try {
+        // Нормализуем: убираем NBSP и лишние пробелы
+        const s = input.replace(/\u00A0/g, " ").trim();
 
-    // --- Формат A: есть направления (С/Ю/В/З или N/S/E/W) ---
-    // Пример: "41,41321° С, 69,19317° В"
-    const dirRegex = /(\d+(?:[.,]\d+)?)\s*°?\s*([СЮВЗNSEW])/gi;
-    const dirMatches = [...s.matchAll(dirRegex)];
-    if (dirMatches.length >= 2) {
-        const toNum = (numStr) => parseFloat(numStr.replace(",", "."));
+        // --- Формат A: есть направления (С/Ю/В/З или N/S/E/W) ---
+        // Пример: "41,41321° С, 69,19317° В"
+        const dirRegex = /(\d+(?:[.,]\d+)?)\s*°?\s*([СЮВЗNSEW])/gi;
+        const dirMatches = [...s.matchAll(dirRegex)];
+        if (dirMatches.length >= 2) {
+            const toNum = (numStr) => parseFloat(numStr.replace(",", "."));
 
-        const applySign = (num, dir) => {
-            const d = dir.toUpperCase();
-            return (d === "Ю" || d === "S" || d === "З" || d === "W") ? -num : num;
-        };
+            const applySign = (num, dir) => {
+                const d = dir.toUpperCase();
+                return (d === "Ю" || d === "S" || d === "З" || d === "W") ? -num : num;
+            };
 
-        const latRaw = toNum(dirMatches[0][1]);
-        const latDir = dirMatches[0][2];
-        const lonRaw = toNum(dirMatches[1][1]);
-        const lonDir = dirMatches[1][2];
+            const latRaw = toNum(dirMatches[0][1]);
+            const latDir = dirMatches[0][2];
+            const lonRaw = toNum(dirMatches[1][1]);
+            const lonDir = dirMatches[1][2];
 
-        const latitude = applySign(latRaw, latDir);
-        const longitude = applySign(lonRaw, lonDir);
+            const latitude = applySign(latRaw, latDir);
+            const longitude = applySign(lonRaw, lonDir);
 
-        return (Number.isFinite(latitude) && Number.isFinite(longitude)) ? { latitude, longitude } : null;
+            return (Number.isFinite(latitude) && Number.isFinite(longitude)) ? { latitude, longitude } : null;
+        }
+
+        // --- Формат B: просто две десятичные координаты ---
+        // Пример: "41.422715, 69.165293" или "41.422715 69.165293"
+        // Разрешаем и запятые как разделитель между числами, и пробелы
+        const simpleRegex = /^\s*([+-]?\d+(?:\.\d+)?)\s*[,\s]\s*([+-]?\d+(?:\.\d+)?)\s*$/;
+        const m = s.match(simpleRegex);
+        if (m) {
+            const latitude = parseFloat(m[1]);
+            const longitude = parseFloat(m[2]);
+            return (Number.isFinite(latitude) && Number.isFinite(longitude)) ? { latitude, longitude } : null;
+        }
+
+        return null;
+    } catch (e) {
+        alert(JSON.stringify(e))
+        return null
     }
-
-    // --- Формат B: просто две десятичные координаты ---
-    // Пример: "41.422715, 69.165293" или "41.422715 69.165293"
-    // Разрешаем и запятые как разделитель между числами, и пробелы
-    const simpleRegex = /^\s*([+-]?\d+(?:\.\d+)?)\s*[,\s]\s*([+-]?\d+(?:\.\d+)?)\s*$/;
-    const m = s.match(simpleRegex);
-    if (m) {
-        const latitude = parseFloat(m[1]);
-        const longitude = parseFloat(m[2]);
-        return (Number.isFinite(latitude) && Number.isFinite(longitude)) ? { latitude, longitude } : null;
-    }
-
-    return null;
 }
 
 export function openYandexRoute(points, mode = "auto") {

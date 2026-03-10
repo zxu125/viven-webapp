@@ -42,7 +42,7 @@ export default function Orders() {
 
         <input
           class="input r-md"
-          placeholder="Поиск по клиенту или адресу"
+          placeholder="Поиск"
           onChange={e => setState(s => ({ ...s, search: e.target.value }))}
         />
       </div>
@@ -56,7 +56,7 @@ export default function Orders() {
               <div class="f-sm text-secondary">{e.client.address}</div>
             </div>
 
-            <div class="badge" style={{ height: 28 }}>
+            <div class="badge" style={{ height: 28, backgroundColor: e.status.color, color: e.status.textColor }}>
               {e.status.ru}
             </div>
           </div>

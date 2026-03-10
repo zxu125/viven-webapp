@@ -52,7 +52,7 @@ export function Map({ query }) {
     }, [data]);
     useEffect(() => {
         setPoints(filteredData?.map(p => ({
-            name: (p.client.name + '').slice(0, 3),
+            name: p.client.name,
             coords: [p.location.longitude, p.location.latitude],
             pinColor: p.order?.statusId == 5 ? "#43d7ff" : p.order?.statusId == 3 ? "#fbbf24" : "#94a3b8",
             ...p
@@ -196,7 +196,7 @@ export function Map({ query }) {
             // usage
             const newMarkers = points.map((p) => {
                 const el = createMaskedMarkerEl({
-                    label: p.name ?? "Z01",
+                    label: p.name.slice(0, 4) ?? "Z01",
                     color: p.pinColor || "#43d7ff",
                 });
                 el.addEventListener("click", function (e) {

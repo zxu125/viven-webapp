@@ -87,7 +87,8 @@ export default function SelectMultiOption({
                     bottom: 0,
                     borderTopLeftRadius: 18,
                     borderTopRightRadius: 18,
-                    maxHeight: "78vh",
+                    height: "78vh",
+                    margin: 5,
                     overflow: "hidden",
                     border: "1px solid var(--border)",
                     borderBottom: "none",
@@ -148,7 +149,7 @@ export default function SelectMultiOption({
                 </div>
 
                 {/* list */}
-                <div ref={listRef} style={{ overflow: "auto", maxHeight: "calc(78vh - 130px)" }}>
+                <div ref={listRef} style={{ overflow: "auto", maxHeight: "calc(78vh - 130px)", paddingBottom: 32 }}>
                     {filtered.length === 0 ? (
                         <div className="p-16 text-muted f-sm">Ничего не найдено</div>
                     ) : (
