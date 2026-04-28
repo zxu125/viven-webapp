@@ -28,9 +28,13 @@ export default function Home() {
               <div class="f-lg">{data?.orderCount || '-'}</div>
             </div>
             <div class="row space-between" style={{ marginTop: 10 }}>
+              <div class="f-lg">Бутылей:</div>
+              <div class="f-lg">{data?.totalOrder || '-'}</div>
+            </div>
+            {/* <div class="row space-between" style={{ marginTop: 10 }}>
               <div class="f-lg">Остатки:</div>
               <div class="f-lg">{data?.totalStock || '-'}</div>
-            </div>
+            </div> */}
           </div>
         </div>
         <div class="card" style={{ marginTop: 9 }}>
