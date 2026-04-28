@@ -327,7 +327,19 @@ export function Map({ query }) {
                             <div className="f-md text-muted" style={{ marginTop: 6, marginLeft: 4 }}>
                                 {selectedPoint.order.totalAmount} × 19L
                             </div>
+
+
                         </div>
+
+                            {selectedPoint.order.note && <div className="b-top" style={{ marginTop: 12, paddingTop: 12 }}>
+                                <div className="row g-12">
+                                    <div className="col" style={{ gap: 2 }}>
+                                        <div className="f-xs text-muted">Примечание</div>
+                                        <div className="f-sm">{selectedPoint.order.note}</div>
+                                    </div>
+                                </div>
+
+                            </div>}
                             <div
                                 style={{
                                     background: "var(--surface)",
