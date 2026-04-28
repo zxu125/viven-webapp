@@ -331,11 +331,11 @@ export function Map({ query }) {
 
                         </div>
 
-                            {selectedPoint.order.note && <div className="b-top" style={{ marginTop: 12, paddingTop: 12 }}>
+                            {(selectedPoint.order.note || selectedPoint.client.deliveryNote) && <div className="b-top" style={{ marginTop: 12, paddingTop: 12 }}>
                                 <div className="row g-12">
                                     <div className="col" style={{ gap: 2 }}>
                                         <div className="f-xs text-muted">Примечание</div>
-                                        <div className="f-sm">{selectedPoint.order.note}</div>
+                                        <div className="f-sm">{selectedPoint.order.note || selectedPoint.client.deliveryNote}</div>
                                     </div>
                                 </div>
 
