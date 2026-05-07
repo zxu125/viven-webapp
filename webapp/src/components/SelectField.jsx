@@ -22,6 +22,7 @@ export default function SelectField({
     title = "Выберите",
     placeholder = "Нажмите чтобы выбрать",
     searchable = true,
+    searchBy = [],
     disabled = false,
     error,
 }) {
@@ -70,6 +71,7 @@ export default function SelectField({
                 maxHeight={400}
                 value={value}
                 onChange={onChange}
+                searchBy={searchBy}
                 searchable={searchable}
                 placeholder="Поиск..."
             />

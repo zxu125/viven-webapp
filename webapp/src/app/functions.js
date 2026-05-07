@@ -1,3 +1,69 @@
+const translitMap = {
+    ya: 'я',
+    yu: 'ю',
+    zh: 'ж',
+    ch: 'ч',
+    sh: 'ш',
+    a: 'а',
+    b: 'б',
+    v: 'в',
+    g: 'г',
+    d: 'д',
+    e: 'е',
+    z: 'з',
+    i: 'и',
+    y: 'й',
+    k: 'к',
+    l: 'л',
+    m: 'м',
+    n: 'н',
+    o: 'о',
+    p: 'п',
+    r: 'р',
+    s: 'с',
+    t: 'т',
+    u: 'у',
+    f: 'ф',
+    h: 'х',
+    c: 'ц'
+};
+
+const translitMapRu = {
+    а: 'a',
+    б: 'b',
+    в: 'v',
+    г: 'g',
+    д: 'd',
+    е: 'e',
+    ё: 'yo',
+    ж: 'zh',
+    з: 'z',
+    и: 'i',
+    й: 'y',
+    к: 'k',
+    л: 'l',
+    м: 'm',
+    н: 'n',
+    о: 'o',
+    п: 'p',
+    р: 'r',
+    с: 's',
+    т: 't',
+    у: 'u',
+    ф: 'f',
+    х: 'h',
+    ц: 'ts',
+    ч: 'ch',
+    ш: 'sh',
+    щ: 'sch',
+    ъ: '',
+    ы: 'y',
+    ь: '',
+    э: 'e',
+    ю: 'yu',
+    я: 'ya',
+};
+
 export function callPhone(phone) {
     const clean = String(phone || "").replace(/[^\d+]/g, "");
     if (!clean) return;
@@ -183,4 +249,25 @@ export function formatPhone(phone) {
         return `${match[1]} (${match[2]}) ${match[3]}-${match[4]}-${match[5]}`;
     }
     return clean; // если не подходит под формат, возвращаем как есть
+}
+
+export function searchRu(text, query) {
+
+    function translitToRu(str) {
+        str = str.toLowerCase();
+
+        for (const [lat, ru] of Object.entries(translitMap)
+            .sort((a, b) => b[0].length - a[0].length)) {
+            str = str.replaceAll(lat, ru);
+        }
+
+        return str;
+    }
+
+    text = text.toLowerCase();
+
+    return (
+        text.includes(query.toLowerCase()) ||
+        text.includes(translitToRu(query)) || translitToRu(text).includes(query)
+    );
 }

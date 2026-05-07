@@ -1,5 +1,6 @@
 import { X } from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { searchRu } from "../app/functions";
 
 export function BottomSheetSelect({
   open,
@@ -8,6 +9,7 @@ export function BottomSheetSelect({
   options = [],
   value = null,
   onChange,
+  searchBy = [],
   placeholder = "Поиск...",
   searchable = true,
   maxHeight,
@@ -33,8 +35,9 @@ export function BottomSheetSelect({
     const s = q.trim().toLowerCase();
     if (!s) return options;
     return options.filter((o) => {
-      const t = `${o.label ?? ""} ${o.subtitle ?? ""}`.toLowerCase();
-      return t.includes(s);
+      const t = `${o.label ?? ""} ${o.subtitle ?? ""} ${searchBy.map(k => o[k])}`.toLowerCase();
+      //return t.includes(s);
+      return searchRu(t, s)
     });
   }, [q, options]);
 

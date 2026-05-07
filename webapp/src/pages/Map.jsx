@@ -236,7 +236,7 @@ export function Map({ query }) {
             onClose={() => selectPoint(null)}
             height="61vh">
             {selectedPoint &&
-                <div style={{ paddingLeft: 16, paddingRight: 16, height: '55vh', position: 'relative' }}>
+                <div style={{ paddingLeft: 16, paddingRight: 16, height: '60vh', position: 'relative' }}>
                     <div className="row space-between" style={{ gap: 10 }}>
                         <div className="col w-full" style={{ gap: 4, minWidth: 0, width: '100%' }}>
                             <div className="f-xl f-bold text-primary" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>

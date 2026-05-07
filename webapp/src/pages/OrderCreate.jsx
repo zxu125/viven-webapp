@@ -90,7 +90,8 @@ export default function OrderCreate({ query }) {
                                     // label="Клиент"
                                     title="Выберите клиента"
                                     value={order.client?.id}
-                                    options={clients.map(c => ({ label: c.name, value: c.id }))}
+                                    options={clients.map(c => ({ ...c, label: c.name, value: c.id }))}
+                                    searchBy={['deliveryNote', 'phone', 'phone2']}
                                     onChange={(v) => {
                                         let c = clients.find(c => c.id === v);
                                         setOrder(s => ({
