@@ -3,7 +3,7 @@ import BottomSheet from "../components/BottomSheet";
 import { QueryClient, useQuery } from "@tanstack/react-query";
 import { api } from "../app/api";
 import { ClientSheetContent } from "../components/ClientSheetContent";
-import { Filter, Navigation, Pencil, Phone, Route, Send } from "lucide-react";
+import { FileArchive, Filter, Navigation, Pencil, Phone, Route, Send } from "lucide-react";
 import { nav } from "../app/router";
 import { callPhone, formatPhone, openTelegramByPhone, openYandexRoute, openYandexRouteFromMyLocation, toDateInputValue } from "../app/functions";
 import useTelegramTheme from "../hooks/useTelegramTheme";
@@ -54,7 +54,9 @@ export function Map({ query }) {
         setPoints(filteredData?.map(p => ({
             name: p.client.name,
             coords: [p.location.longitude, p.location.latitude],
-            pinColor: p.order?.statusId == 5 ? "#43d7ff" : p.order?.statusId == 3 ? "#fbbf24" : "#94a3b8",
+            pinColor: p.activeState == 'B' ? 'red'
+                : p.order?.statusId == 5 ? "#43d7ff"
+                    : p.order?.statusId == 3 ? "#fbbf24" : "#94a3b8",
             ...p
         })) || []);
     }, [filteredData]);
@@ -86,6 +88,9 @@ export function Map({ query }) {
 
     function applyFilters(filters) {
         setFilteredData(data.filter(e => {
+            if (e.activeState == 'C') return false;
+            if (filters.inactive && e.activeState != 'B') return false;
+            if (filters.inactive && e.activeState == 'B') return true;
             if (filters.statusId) {
                 if (filters.statusId == 35 && (!e.order || (e.order.statusId != 3 && e.order.statusId != 5))) {
                     return false;
@@ -498,8 +503,8 @@ export function Map({ query }) {
                                     borderRadius: 20,
                                     boxShadow: "0px 1px 4px 0px var(--surface-2)"
                                 }}
-                                className={!filters.statusId && !filters.noOrder ? 'bg-brand' : 'bg-surface'}
-                                onClick={() => setFilters((f) => ({ ...f, statusId: null, noOrder: null }))}
+                                className={!filters.statusId && !filters.noOrder && !filters.inactive ? 'bg-brand' : 'bg-surface'}
+                                onClick={() => setFilters((f) => ({ ...f, statusId: null, noOrder: null, inactive: false }))}
                             >
                                 Все
                             </div>
@@ -511,7 +516,7 @@ export function Map({ query }) {
                                     boxShadow: "0px 1px 4px 0px var(--surface-2)"
                                 }}
                                 className={filters.statusId == 5 ? 'bg-brand' : 'bg-surface'}
-                                onClick={() => setFilters((f) => ({ ...f, statusId: 5, noOrder: null }))}
+                                onClick={() => setFilters((f) => ({ ...f, statusId: 5, noOrder: null, inactive: false }))}
                             >
                                 Новый
                             </div>
@@ -524,7 +529,7 @@ export function Map({ query }) {
                                     boxShadow: "0px 1px 4px 0px var(--surface-2)"
                                 }}
                                 className={filters.statusId == 3 ? 'bg-brand' : 'bg-surface'}
-                                onClick={() => setFilters((f) => ({ ...f, statusId: 3, noOrder: null }))}
+                                onClick={() => setFilters((f) => ({ ...f, statusId: 3, noOrder: null, inactive: false }))}
                             >
                                 В пути
                             </div>
@@ -536,9 +541,21 @@ export function Map({ query }) {
                                     boxShadow: "0px 1px 4px 0px var(--surface-2)"
                                 }}
                                 className={filters.statusId == 35 ? 'bg-brand' : 'bg-surface'}
-                                onClick={() => setFilters((f) => ({ ...f, statusId: 35, noOrder: null }))}
+                                onClick={() => setFilters((f) => ({ ...f, statusId: 35, noOrder: null, inactive: false }))}
                             >
                                 Новый/В пути
+                            </div>
+                            <div
+                                style={{
+                                    flex: "0 0 auto",
+                                    padding: "6px 16px",
+                                    borderRadius: 20,
+                                    boxShadow: "0px 1px 4px 0px var(--surface-2)",
+                                }}
+                                className={filters.inactive ? 'bg-brand' : 'bg-surface'}
+                                onClick={() => setFilters((f) => ({ ...f, statusId: null, noOrder: null, inactive: true }))}
+                            >
+                                Удаленные
                             </div>
                             <div
                                 style={{
@@ -549,7 +566,7 @@ export function Map({ query }) {
                                     marginRight: 20
                                 }}
                                 className={filters.noOrder ? 'bg-brand' : 'bg-surface'}
-                                onClick={() => setFilters((f) => ({ ...f, statusId: null, noOrder: true }))}
+                                onClick={() => setFilters((f) => ({ ...f, statusId: null, noOrder: true, inactive: null }))}
                             >
                                 Без заказа
                             </div>

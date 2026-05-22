@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { nav } from "../app/router.js";
 import { api } from "../app/api.js";
-import { Edit, Eye, Map, MapPin, Pin } from "lucide-react";
+import { Edit, Eye, Map, MapPin, Pin, Trash } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { parseGeoCoords } from "../app/functions.js";
 import YandexLocationPickerModal from "../components/YandexLocationPickerModal.jsx";
@@ -32,6 +32,16 @@ export default function ClientDetails({ query }) {
         _()
     }, [query]);
     if (isloading) return <div style={{ padding: 16 }}>Loading...</div>;
+    let deleteClient = async () => {
+        if (confirm('Удалить клиента?')) {
+            try {
+                await api.post('/clients/set-inactive', { id: query.clientId })
+                nav("/clients");
+            } catch (e) {
+                alert(e.response?.data?.message)
+            }
+        }
+    }
     return (
         <div>
             <div class="topbar p-16 row space-between">
@@ -42,9 +52,14 @@ export default function ClientDetails({ query }) {
                 </div>
                 <div>
                     {mode == 'view' ?
-                        <Edit
-                            size={22} class="cursor-pointer"
-                            onClick={() => setMode('edit')} />
+                        <div style={{ display: 'flex', gap: 17 }}>
+                            <Edit
+                                size={22} class="cursor-pointer"
+                                onClick={() => setMode('edit')} />
+                            <Trash
+                                size={22} class="cursor-pointer"
+                                onClick={() => deleteClient()} />
+                        </div>
                         :
                         <div class="row g-8">
                             <button onClick={() => setMode('view')} class="btn btn-sm">Отмена</button>

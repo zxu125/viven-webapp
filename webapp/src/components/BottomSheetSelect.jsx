@@ -84,6 +84,8 @@ export function BottomSheetSelect({
           transform: `translateY(${dragY}px)`,
           transition: dragging ? "none" : "transform 180ms ease",
           backgroundColor: "var(--surface)",
+          display: 'flex',
+          flexDirection:'column'
         }}
         onMouseDown={(e) => e.stopPropagation()}
         onTouchStart={(e) => e.stopPropagation()}
@@ -203,7 +205,7 @@ const styles = {
     fontSize: 14,
   },
   list: {
-    maxHeight: 420,
+    // maxHeight: 120,
     overflow: "auto",
     WebkitOverflowScrolling: "touch",
     paddingBottom: 10,
